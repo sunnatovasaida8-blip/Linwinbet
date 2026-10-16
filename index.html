@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports & Apple Game Demo TWA</title>
+    <title>Linwinbet - FIFA & Mini Games</title>
     <!-- Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-color: #0f1923;
-            --card-bg: #192734;
+            --bg-color: #0d1821;
+            --card-bg: #17232d;
             --accent-color: #20d071;
-            --accent-hover: #17b35f;
+            --accent-hover: #18b560;
             --text-color: #ffffff;
             --text-secondary: #8a9ba8;
-            --border-color: #283848;
+            --border-color: #243442;
+            --danger-color: #e74c3c;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -22,7 +23,7 @@
         body { 
             background-color: var(--bg-color); 
             color: var(--text-color); 
-            padding-bottom: 70px;
+            padding-bottom: 75px;
         }
 
         /* Header */
@@ -39,7 +40,7 @@
         }
         .user-info { font-size: 14px; font-weight: 600; }
         .balance-box { 
-            background: #111b24; 
+            background: #0a1118; 
             padding: 6px 12px; 
             border-radius: 20px; 
             border: 1px solid var(--border-color);
@@ -48,14 +49,14 @@
             color: #ffd700; 
         }
 
-        /* Top-up Demo Coin Button */
         .faucet-btn {
-            background: #283848;
-            color: #fff;
+            background: var(--accent-color);
+            color: #000;
             border: none;
-            padding: 4px 8px;
+            padding: 4px 10px;
             border-radius: 12px;
             font-size: 11px;
+            font-weight: bold;
             cursor: pointer;
             margin-left: 6px;
         }
@@ -64,18 +65,20 @@
         .nav-tabs {
             display: flex;
             background: var(--card-bg);
-            padding: 8px 16px;
-            gap: 10px;
+            padding: 8px;
+            gap: 6px;
             border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
         }
         .tab-btn {
             flex: 1;
+            white-space: nowrap;
             background: transparent;
             border: none;
             color: var(--text-secondary);
-            padding: 8px;
+            padding: 8px 12px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
             border-radius: 6px;
             cursor: pointer;
         }
@@ -84,29 +87,40 @@
             color: #000;
         }
 
-        /* Content Sections */
-        .section { display: none; padding: 16px; }
+        /* Sections */
+        .section { display: none; padding: 14px; }
         .section.active { display: block; }
 
-        h3 { font-size: 15px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        h3 { font-size: 15px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+
+        /* Refresh Match Button */
+        .refresh-btn {
+            background: #243442;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+        }
 
         /* Match Card */
         .match-card { 
             background: var(--card-bg); 
             border-radius: 12px; 
-            padding: 14px; 
-            margin-bottom: 12px; 
+            padding: 12px; 
+            margin-bottom: 10px; 
             border: 1px solid var(--border-color);
         }
         .match-meta { font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; display: flex; justify-content: space-between; }
-        .teams { display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; margin-bottom: 12px; align-items: center; }
+        .teams { display: flex; justify-content: space-between; font-weight: bold; font-size: 13px; margin-bottom: 10px; align-items: center; }
         .odds { display: flex; gap: 8px; }
         .odd-btn { 
             flex: 1; 
-            background: #22303f; 
+            background: #1e2c38; 
             border: 1px solid var(--border-color); 
             color: #fff; 
-            padding: 10px 6px; 
+            padding: 8px; 
             border-radius: 8px; 
             text-align: center; 
             cursor: pointer; 
@@ -114,7 +128,29 @@
         .odd-btn span { display: block; font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
         .odd-btn:active { background: var(--accent-color); color: #000; }
 
-        /* Mini Game (Apple) */
+        /* Game Selector Sub-tabs */
+        .game-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+            overflow-x: auto;
+        }
+        .game-btn {
+            background: #1e2c38;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .game-btn.active {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
         .game-container {
             background: var(--card-bg);
             border-radius: 12px;
@@ -122,32 +158,24 @@
             border: 1px solid var(--border-color);
             text-align: center;
         }
-        .apple-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            margin: 15px 0;
-        }
-        .apple-cell {
-            background: #22303f;
-            aspect-ratio: 1;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            cursor: pointer;
-            border: 1px solid var(--border-color);
-        }
+
+        /* Apple Grid */
+        .apple-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 12px 0; }
+        .apple-cell { background: #1e2c38; aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; border: 1px solid var(--border-color); }
+
+        /* Mines Grid */
+        .mines-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 12px 0; }
+        .mine-cell { background: #1e2c38; aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; border: 1px solid var(--border-color); }
+
         .action-btn {
             width: 100%;
             background: var(--accent-color);
             color: #000;
             border: none;
-            padding: 12px;
+            padding: 10px;
             border-radius: 8px;
             font-weight: bold;
-            font-size: 15px;
+            font-size: 14px;
             cursor: pointer;
             margin-top: 10px;
         }
@@ -161,6 +189,7 @@
             display: flex;
             justify-content: space-around;
             padding: 10px 0;
+            z-index: 100;
         }
         .nav-item {
             background: none; border: none;
@@ -177,78 +206,72 @@
     <div class="header">
         <div class="user-info" id="user-name">Gamer</div>
         <div style="display: flex; align-items: center;">
-            <div class="balance-box">🪙 <span id="balance">1000</span> COIN</div>
+            <div class="balance-box">🪙 <span id="balance">1000</span></div>
             <button class="faucet-btn" onclick="addFreeCoins()">+500</button>
         </div>
     </div>
 
     <!-- Navigation Tabs -->
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('sport', event)">⚽ Sport Simulatsiyasi</button>
-        <button class="tab-btn" onclick="switchTab('games', event)">🍏 Apple Mini Game</button>
+        <button class="tab-btn active" onclick="switchTab('fifa', event)">🎮 FIFA (Virtual)</button>
+        <button class="tab-btn" onclick="switchTab('games', event)">🍎 Games (Mini-O'yinlar)</button>
     </div>
 
-    <!-- Sport Section -->
-    <div id="sport-section" class="section active">
-        <h3>🔥 Virtual Jonli O'yinlar (Demo)</h3>
-
-        <div class="match-card">
-            <div class="match-meta">
-                <span>Angliya Premyer Ligasi</span>
-                <span style="color: #ff4d4d; font-weight: bold;">● 74'</span>
-            </div>
-            <div class="teams">
-                <span>Arsenal</span>
-                <span>2 : 1</span>
-                <span>Real Madrid</span>
-            </div>
-            <div class="odds">
-                <button class="odd-btn" onclick="placeDemoBet('Arsenal', 1.45)">1 <span>1.45</span></button>
-                <button class="odd-btn" onclick="placeDemoBet('Durang', 4.20)">X <span>4.20</span></button>
-                <button class="odd-btn" onclick="placeDemoBet('Real Madrid', 7.50)">2 <span>7.50</span></button>
-            </div>
-        </div>
-
-        <div class="match-card">
-            <div class="match-meta">
-                <span>Ispaniya La Ligasi</span>
-                <span style="color: #ff4d4d; font-weight: bold;">● 32'</span>
-            </div>
-            <div class="teams">
-                <span>Barselona</span>
-                <span>0 : 0</span>
-                <span>Atletiko</span>
-            </div>
-            <div class="odds">
-                <button class="odd-btn" onclick="placeDemoBet('Barselona', 2.10)">1 <span>2.10</span></button>
-                <button class="odd-btn" onclick="placeDemoBet('Durang', 3.30)">X <span>3.30</span></button>
-                <button class="odd-btn" onclick="placeDemoBet('Atletiko', 3.60)">2 <span>3.60</span></button>
-            </div>
-        </div>
+    <!-- FIFA Section -->
+    <div id="fifa-section" class="section active">
+        <h3>
+            <span>⚽ FIFA Virtual Matchlar</span>
+            <button class="refresh-btn" onclick="generateFifaMatches()">🔄 Yangilash</button>
+        </h3>
+        <div id="fifa-matches-list"></div>
     </div>
 
     <!-- Mini Games Section -->
     <div id="games-section" class="section">
-        <h3>🍏 Apple of Fortune (Demo O'yin)</h3>
-        <div class="game-container">
-            <p style="font-size: 13px; color: var(--text-secondary);">
-                Har bir katakcha bosish = <b>50 COIN</b>. Yaxshi olma topsangiz <b>+100 COIN</b>!
-            </p>
-            <div class="apple-grid" id="appleGrid"></div>
-            <button class="action-btn" onclick="resetAppleGame()">O'yinni qayta boshlash</button>
+        <div class="game-selector">
+            <button class="game-btn active" onclick="selectMiniGame('apple', event)">🍎 Apple of Fortune</button>
+            <button class="game-btn" onclick="selectMiniGame('mines', event)">💣 Mines (Minalar)</button>
+            <button class="game-btn" onclick="selectMiniGame('dice', event)">🎲 Dice (Zar)</button>
+        </div>
+
+        <!-- Apple Game -->
+        <div id="game-apple" class="game-box">
+            <div class="game-container">
+                <p style="font-size: 13px; color: var(--text-secondary);">Katagiga 50 COIN tikiladi. 🍏 = +100 COIN!</p>
+                <div class="apple-grid" id="appleGrid"></div>
+                <button class="action-btn" onclick="initAppleGame()">Qayta Boshlash</button>
+            </div>
+        </div>
+
+        <!-- Mines Game -->
+        <div id="game-mines" class="game-box" style="display: none;">
+            <div class="game-container">
+                <p style="font-size: 13px; color: var(--text-secondary);">Har bir olmos 💎 sizga +80 COIN beradi. 💣 Minadan qoching!</p>
+                <div class="mines-grid" id="minesGrid"></div>
+                <button class="action-btn" onclick="initMinesGame()">Yangi Maydon</button>
+            </div>
+        </div>
+
+        <!-- Dice Game -->
+        <div id="game-dice" class="game-box" style="display: none;">
+            <div class="game-container">
+                <p style="font-size: 13px; color: var(--text-secondary);">100 COIN tikib zarni tashlang. 4, 5 yoki 6 tushsa yutasiz!</p>
+                <div id="dice-result" style="font-size: 60px; margin: 15px 0;">🎲</div>
+                <button class="action-btn" onclick="playDice()">Zar Tashlash (100 COIN)</button>
+            </div>
         </div>
     </div>
 
     <!-- Bottom Nav -->
     <div class="bottom-nav">
-        <button class="nav-item active" onclick="switchTab('sport', event)">
-            <div>⚽</div>Sport
+        <button class="nav-item active" onclick="switchTab('fifa', event)">
+            <div>🎮</div>FIFA
         </button>
         <button class="nav-item" onclick="switchTab('games', event)">
-            <div>🎮</div>O'yinlar
+            <div>🎰</div>Games
         </button>
-        <button class="nav-item" onclick="alert('Demo rejimi: Barcha tangalar virtual!')">
-            <div>ℹ️</div>Ma'lumot
+        <button class="nav-item" onclick="alert('Demo rejimi: Virtual tangalar!')">
+            <div>ℹ️</div>Info
         </button>
     </div>
 
@@ -256,7 +279,6 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Virtual Balansni boshqarish (LocalStorage)
         let coins = parseInt(localStorage.getItem('demo_coins')) || 1000;
 
         function updateBalanceDisplay() {
@@ -264,28 +286,81 @@
             localStorage.setItem('demo_coins', coins);
         }
 
-        // Boshlang'ich Sozlamalar
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             document.getElementById('user-name').innerText = tg.initDataUnsafe.user.first_name;
         }
         updateBalanceDisplay();
 
-        // Tekin Coin qo'shish
         function addFreeCoins() {
             coins += 500;
             updateBalanceDisplay();
             tg.HapticFeedback.notificationOccurred('success');
-            alert('Sizga 500 tekin COIN berildi!');
         }
 
-        // Tablarni almashtirish
+        /* --- FIFA TEAMLAR VA MATCH GENERATORI --- */
+        const fifaLeagues = [
+            { name: "APL", teams: ["Arsenal", "Man City", "Liverpool", "Chelsea", "Man United", "Tottenham"] },
+            { name: "La Liga", teams: ["Real Madrid", "Barcelona", "Atletico Madrid", "Sevilla", "Villarreal"] },
+            { name: "Bundesliga", teams: ["Bayern Munich", "Bayer Leverkusen", "Dortmund", "RB Leipzig"] },
+            { name: "Ligue 1", teams: ["PSG", "Monaco", "Marseille", "Lille", "Lyon"] }
+        ];
+
+        function getRandomItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+        function generateFifaMatches() {
+            const container = document.getElementById('fifa-matches-list');
+            container.innerHTML = '';
+
+            fifaLeagues.forEach(league => {
+                let team1 = getRandomItem(league.teams);
+                let team2 = getRandomItem(league.teams.filter(t => t !== team1));
+
+                let odd1 = (Math.random() * 2 + 1.2).toFixed(2);
+                let oddX = (Math.random() * 1.5 + 3.0).toFixed(2);
+                let odd2 = (Math.random() * 2.5 + 1.5).toFixed(2);
+                let minute = Math.floor(Math.random() * 80) + 1;
+                let score1 = Math.floor(Math.random() * 3);
+                let score2 = Math.floor(Math.random() * 3);
+
+                const card = document.createElement('div');
+                card.className = 'match-card';
+                card.innerHTML = `
+                    <div class="match-meta">
+                        <span>FIFA 26 | ${league.name}</span>
+                        <span style="color: var(--danger-color); font-weight: bold;">● ${minute}' min</span>
+                    </div>
+                    <div class="teams">
+                        <span>${team1}</span>
+                        <span>${score1} : ${score2}</span>
+                        <span>${team2}</span>
+                    </div>
+                    <div class="odds">
+                        <button class="odd-btn" onclick="placeBet('${team1}', ${odd1})">1 <span>${odd1}</span></button>
+                        <button class="odd-btn" onclick="placeBet('Durang', ${oddX})">X <span>${oddX}</span></button>
+                        <button class="odd-btn" onclick="placeBet('${team2}', ${odd2})">2 <span>${odd2}</span></button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            tg.HapticFeedback.impactOccurred('light');
+        }
+
+        function placeBet(team, odd) {
+            if (coins < 100) { alert('COIN yetarli emas!'); return; }
+            coins -= 100;
+            updateBalanceDisplay();
+            tg.HapticFeedback.impactOccurred('medium');
+            alert(`100 COIN tikildi: ${team} (Kef: ${odd})`);
+        }
+
+        /* --- TABS SWITCHER --- */
         function switchTab(tabName, event) {
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
             document.querySelectorAll('.nav-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.bottom-nav .nav-item').forEach(item => item.classList.remove('active'));
 
-            if (tabName === 'sport') {
-                document.getElementById('sport-section').classList.add('active');
+            if (tabName === 'fifa') {
+                document.getElementById('fifa-section').classList.add('active');
+                generateFifaMatches();
             } else {
                 document.getElementById('games-section').classList.add('active');
                 initAppleGame();
@@ -293,22 +368,19 @@
             if (event) event.currentTarget.classList.add('active');
         }
 
-        // Demo Sport Stavkasi (100 Coin)
-        function placeDemoBet(team, odd) {
-            const betAmount = 100;
-            if (coins < betAmount) {
-                alert('Tangalaringiz yetarli emas! +500 tugmasini bosing.');
-                return;
-            }
+        function selectMiniGame(game, event) {
+            document.querySelectorAll('.game-box').forEach(gb => gb.style.display = 'none');
+            document.querySelectorAll('.game-btn').forEach(gb => gb.classList.remove('active'));
 
-            coins -= betAmount;
-            updateBalanceDisplay();
-            tg.HapticFeedback.impactOccurred('medium');
+            document.getElementById('game-' + game).style.display = 'block';
+            event.currentTarget.classList.add('active');
 
-            alert(`100 COIN tikildi: ${team} (Kef: ${odd})\nNatija o'yin yakunida aniqlanadi!`);
+            if (game === 'apple') initAppleGame();
+            if (game === 'mines') initMinesGame();
         }
 
-        // Apple of Fortune Mini Game Mantiqi
+        /* --- MINI GAMES LOGIC --- */
+        // 1. Apple Game
         function initAppleGame() {
             const grid = document.getElementById('appleGrid');
             grid.innerHTML = '';
@@ -316,27 +388,18 @@
                 const cell = document.createElement('div');
                 cell.className = 'apple-cell';
                 cell.innerHTML = '❓';
-                
                 cell.onclick = function() {
                     if (cell.dataset.opened) return;
-
-                    if (coins < 50) {
-                        alert('Katakni ochish uchun 50 COIN kerak!');
-                        return;
-                    }
-
-                    coins -= 50; // Katak ochish narxi
+                    if (coins < 50) { alert('50 COIN kerak!'); return; }
+                    coins -= 50;
                     cell.dataset.opened = "true";
 
-                    const isGoodApple = Math.random() > 0.4;
-                    if (isGoodApple) {
-                        cell.innerHTML = '🍏';
-                        cell.style.background = '#1b4d3e';
-                        coins += 100; // Yutuq
+                    if (Math.random() > 0.45) {
+                        cell.innerHTML = '🍏'; cell.style.background = '#1b4d3e';
+                        coins += 100;
                         tg.HapticFeedback.notificationOccurred('success');
                     } else {
-                        cell.innerHTML = '🍎';
-                        cell.style.background = '#4d1b1b';
+                        cell.innerHTML = '🍎'; cell.style.background = '#4d1b1b';
                         tg.HapticFeedback.notificationOccurred('error');
                     }
                     updateBalanceDisplay();
@@ -345,10 +408,54 @@
             }
         }
 
-        function resetAppleGame() {
-            initAppleGame();
-            tg.HapticFeedback.impactOccurred('light');
+        // 2. Mines Game
+        function initMinesGame() {
+            const grid = document.getElementById('minesGrid');
+            grid.innerHTML = '';
+            for (let i = 0; i < 12; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'mine-cell';
+                cell.innerHTML = '❓';
+                cell.onclick = function() {
+                    if (cell.dataset.opened) return;
+                    if (coins < 50) { alert('50 COIN kerak!'); return; }
+                    coins -= 50;
+                    cell.dataset.opened = "true";
+
+                    if (Math.random() > 0.3) {
+                        cell.innerHTML = '💎'; cell.style.background = '#1b4d3e';
+                        coins += 80;
+                        tg.HapticFeedback.notificationOccurred('success');
+                    } else {
+                        cell.innerHTML = '💣'; cell.style.background = '#4d1b1b';
+                        tg.HapticFeedback.notificationOccurred('error');
+                    }
+                    updateBalanceDisplay();
+                };
+                grid.appendChild(cell);
+            }
         }
+
+        // 3. Dice Game
+        function playDice() {
+            if (coins < 100) { alert('100 COIN kerak!'); return; }
+            coins -= 100;
+
+            const res = Math.floor(Math.random() * 6) + 1;
+            const diceIcons = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+            document.getElementById('dice-result').innerText = diceIcons[res - 1];
+
+            if (res >= 4) {
+                coins += 200;
+                tg.HapticFeedback.notificationOccurred('success');
+            } else {
+                tg.HapticFeedback.notificationOccurred('error');
+            }
+            updateBalanceDisplay();
+        }
+
+        // Init FIFA matches on start
+        generateFifaMatches();
     </script>
 </body>
 </html>
