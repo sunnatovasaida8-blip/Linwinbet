@@ -93,7 +93,6 @@
 
         h3 { font-size: 15px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
 
-        /* Refresh Match Button */
         .refresh-btn {
             background: #243442;
             color: #fff;
@@ -102,6 +101,32 @@
             border-radius: 6px;
             font-size: 11px;
             cursor: pointer;
+        }
+
+        /* FIFA Sub-tabs (Live / Liniya) */
+        .fifa-subtabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            background: #111c26;
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        .fifa-subtab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .fifa-subtab-btn.active {
+            background: #243442;
+            color: var(--accent-color);
         }
 
         /* Match Card */
@@ -127,6 +152,37 @@
         }
         .odd-btn span { display: block; font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
         .odd-btn:active { background: var(--accent-color); color: #000; }
+
+        /* Bet Controls Inside Games */
+        .bet-control-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            align-items: center;
+            justify-content: center;
+        }
+        .bet-input {
+            background: #0d1821;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 120px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .bet-chip {
+            background: #1e2c38;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .bet-chip:active { background: var(--accent-color); color: #000; }
 
         /* Game Selector Sub-tabs */
         .game-selector {
@@ -160,12 +216,12 @@
         }
 
         /* Apple Grid */
-        .apple-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 12px 0; }
-        .apple-cell { background: #1e2c38; aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; border: 1px solid var(--border-color); }
+        .apple-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 12px 0; }
+        .apple-cell { background: #1e2c38; aspect-ratio: 1; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; border: 1px solid var(--border-color); }
 
         /* Mines Grid */
-        .mines-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 12px 0; }
-        .mine-cell { background: #1e2c38; aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; border: 1px solid var(--border-color); }
+        .mines-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 12px 0; }
+        .mine-cell { background: #1e2c38; aspect-ratio: 1; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; border: 1px solid var(--border-color); }
 
         .action-btn {
             width: 100%;
@@ -206,23 +262,38 @@
     <div class="header">
         <div class="user-info" id="user-name">Gamer</div>
         <div style="display: flex; align-items: center;">
-            <div class="balance-box">🪙 <span id="balance">1000</span></div>
-            <button class="faucet-btn" onclick="addFreeCoins()">+500</button>
+            <div class="balance-box">🪙 <span id="balance">10000</span></div>
+            <button class="faucet-btn" onclick="addFreeCoins()">+1000</button>
         </div>
     </div>
 
     <!-- Navigation Tabs -->
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('fifa', event)">🎮 FIFA (Virtual)</button>
-        <button class="tab-btn" onclick="switchTab('games', event)">🍎 Games (Mini-O'yinlar)</button>
+        <button class="tab-btn active" onclick="switchTab('fifa', event)">🎮 FIFA 26</button>
+        <button class="tab-btn" onclick="switchTab('games', event)">🍎 Mini Games</button>
     </div>
 
     <!-- FIFA Section -->
     <div id="fifa-section" class="section active">
+        <!-- Live / Liniya Filter -->
+        <div class="fifa-subtabs">
+            <button class="fifa-subtab-btn active" onclick="switchFifaMode('live', event)">🔴 LIVE O'yinlar</button>
+            <button class="fifa-subtab-btn" onclick="switchFifaMode('line', event)">📅 LINIYA (Kelgusi)</button>
+        </div>
+
         <h3>
-            <span>⚽ FIFA Virtual Matchlar</span>
+            <span id="fifa-title">⚽ FIFA Live O'yinlar</span>
             <button class="refresh-btn" onclick="generateFifaMatches()">🔄 Yangilash</button>
         </h3>
+
+        <div class="bet-control-box">
+            <span style="font-size: 12px; color: var(--text-secondary);">Stavka:</span>
+            <input type="number" id="sport-bet-amount" class="bet-input" value="500">
+            <button class="bet-chip" onclick="setSportBet(100)">100</button>
+            <button class="bet-chip" onclick="setSportBet(500)">500</button>
+            <button class="bet-chip" onclick="setSportBet(1000)">1000</button>
+        </div>
+
         <div id="fifa-matches-list"></div>
     </div>
 
@@ -230,34 +301,52 @@
     <div id="games-section" class="section">
         <div class="game-selector">
             <button class="game-btn active" onclick="selectMiniGame('apple', event)">🍎 Apple of Fortune</button>
-            <button class="game-btn" onclick="selectMiniGame('mines', event)">💣 Mines (Minalar)</button>
-            <button class="game-btn" onclick="selectMiniGame('dice', event)">🎲 Dice (Zar)</button>
+            <button class="game-btn" onclick="selectMiniGame('mines', event)">💣 Mines</button>
+            <button class="game-btn" onclick="selectMiniGame('dice', event)">🎲 Dice</button>
         </div>
 
         <!-- Apple Game -->
         <div id="game-apple" class="game-box">
             <div class="game-container">
-                <p style="font-size: 13px; color: var(--text-secondary);">Katagiga 50 COIN tikiladi. 🍏 = +100 COIN!</p>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">Stavka miqdorini tanlang va yaxshi olmalarni toping:</p>
+                <div class="bet-control-box">
+                    <input type="number" id="apple-bet-amount" class="bet-input" value="200">
+                    <button class="bet-chip" onclick="setAppleBet(100)">100</button>
+                    <button class="bet-chip" onclick="setAppleBet(500)">500</button>
+                    <button class="bet-chip" onclick="setAppleBet(1000)">1000</button>
+                </div>
                 <div class="apple-grid" id="appleGrid"></div>
-                <button class="action-btn" onclick="initAppleGame()">Qayta Boshlash</button>
+                <button class="action-btn" onclick="startAppleGame()">Yangi O'yinni Boshlash</button>
             </div>
         </div>
 
         <!-- Mines Game -->
         <div id="game-mines" class="game-box" style="display: none;">
             <div class="game-container">
-                <p style="font-size: 13px; color: var(--text-secondary);">Har bir olmos 💎 sizga +80 COIN beradi. 💣 Minadan qoching!</p>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">Minalardan qochib, olmoslarni toping 💎</p>
+                <div class="bet-control-box">
+                    <input type="number" id="mines-bet-amount" class="bet-input" value="200">
+                    <button class="bet-chip" onclick="setMinesBet(100)">100</button>
+                    <button class="bet-chip" onclick="setMinesBet(500)">500</button>
+                    <button class="bet-chip" onclick="setMinesBet(1000)">1000</button>
+                </div>
                 <div class="mines-grid" id="minesGrid"></div>
-                <button class="action-btn" onclick="initMinesGame()">Yangi Maydon</button>
+                <button class="action-btn" onclick="startMinesGame()">Maydonni Yangilash</button>
             </div>
         </div>
 
         <!-- Dice Game -->
         <div id="game-dice" class="game-box" style="display: none;">
             <div class="game-container">
-                <p style="font-size: 13px; color: var(--text-secondary);">100 COIN tikib zarni tashlang. 4, 5 yoki 6 tushsa yutasiz!</p>
-                <div id="dice-result" style="font-size: 60px; margin: 15px 0;">🎲</div>
-                <button class="action-btn" onclick="playDice()">Zar Tashlash (100 COIN)</button>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">Zar 4, 5 yoki 6 tushsa yutasiz!</p>
+                <div class="bet-control-box">
+                    <input type="number" id="dice-bet-amount" class="bet-input" value="500">
+                    <button class="bet-chip" onclick="setDiceBet(100)">100</button>
+                    <button class="bet-chip" onclick="setDiceBet(500)">500</button>
+                    <button class="bet-chip" onclick="setDiceBet(1000)">1000</button>
+                </div>
+                <div id="dice-result" style="font-size: 55px; margin: 10px 0;">🎲</div>
+                <button class="action-btn" onclick="playDice()">Zar Tashlash</button>
             </div>
         </div>
     </div>
@@ -270,7 +359,7 @@
         <button class="nav-item" onclick="switchTab('games', event)">
             <div>🎰</div>Games
         </button>
-        <button class="nav-item" onclick="alert('Demo rejimi: Virtual tangalar!')">
+        <button class="nav-item" onclick="alert('Demo rejimi: Live va Liniya o\'yinlari!')">
             <div>ℹ️</div>Info
         </button>
     </div>
@@ -279,7 +368,8 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        let coins = parseInt(localStorage.getItem('demo_coins')) || 1000;
+        let coins = localStorage.getItem('demo_coins') !== null ? parseInt(localStorage.getItem('demo_coins')) : 10000;
+        let currentFifaMode = 'live'; // 'live' yoki 'line'
 
         function updateBalanceDisplay() {
             document.getElementById('balance').innerText = coins;
@@ -292,65 +382,107 @@
         updateBalanceDisplay();
 
         function addFreeCoins() {
-            coins += 500;
+            coins += 1000;
             updateBalanceDisplay();
             tg.HapticFeedback.notificationOccurred('success');
         }
 
-        /* --- FIFA TEAMLAR VA MATCH GENERATORI --- */
-        const fifaLeagues = [
-            { name: "APL", teams: ["Arsenal", "Man City", "Liverpool", "Chelsea", "Man United", "Tottenham"] },
-            { name: "La Liga", teams: ["Real Madrid", "Barcelona", "Atletico Madrid", "Sevilla", "Villarreal"] },
-            { name: "Bundesliga", teams: ["Bayern Munich", "Bayer Leverkusen", "Dortmund", "RB Leipzig"] },
-            { name: "Ligue 1", teams: ["PSG", "Monaco", "Marseille", "Lille", "Lyon"] }
+        function setSportBet(val) { document.getElementById('sport-bet-amount').value = val; }
+        function setAppleBet(val) { document.getElementById('apple-bet-amount').value = val; }
+        function setMinesBet(val) { document.getElementById('mines-bet-amount').value = val; }
+        function setDiceBet(val) { document.getElementById('dice-bet-amount').value = val; }
+
+        /* --- ALL 76 TEAMS (APL, LaLiga, Bundesliga, Ligue 1) --- */
+        const allLeagues = [
+            {
+                name: "APL (Angliya)",
+                teams: ["Arsenal", "Man City", "Liverpool", "Chelsea", "Man United", "Tottenham", "Newcastle", "Aston Villa", "Brighton", "West Ham", "Wolverhampton", "Fulham", "Bournemouth", "Everton", "Brentford", "Crystal Palace", "Nottingham Forest", "Leicester", "Ipswich", "Southampton"]
+            },
+            {
+                name: "La Liga (Ispaniya)",
+                teams: ["Real Madrid", "Barcelona", "Atletico Madrid", "Athletic Bilbao", "Real Sociedad", "Betis", "Villarreal", "Girona", "Sevilla", "Valencia", "Osasuna", "Getafe", "Celta Vigo", "Rayo Vallecano", "Mallorca", "Alaves", "Las Palmas", "Espanyol", "Leganes", "Valladolid"]
+            },
+            {
+                name: "Bundesliga (Germaniya)",
+                teams: ["Bayern Munich", "Bayer Leverkusen", "Dortmund", "RB Leipzig", "Eintracht Frankfurt", "Wolfsburg", "Gladbach", "Freiburg", "Hoffenheim", "Augsburg", "Werder Bremen", "Union Berlin", "Mainz", "Heidenheim", "Stuttgart", "Bochum", "St. Pauli", "Holstein Kiel"]
+            },
+            {
+                name: "Ligue 1 (Fransiya)",
+                teams: ["PSG", "Monaco", "Marseille", "Lille", "Lyon", "Lens", "Rennes", "Nice", "Reims", "Strasbourg", "Toulouse", "Montpellier", "Nantes", "Brest", "Auxerre", "Angers", "Le Havre", "Saint-Etienne"]
+            }
         ];
 
-        function getRandomItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+        function switchFifaMode(mode, event) {
+            currentFifaMode = mode;
+            document.querySelectorAll('.fifa-subtab-btn').forEach(b => b.classList.remove('active'));
+            if (event) event.currentTarget.classList.add('active');
+
+            document.getElementById('fifa-title').innerText = mode === 'live' ? '⚽ FIFA Live O\'yinlar' : '📅 FIFA Liniya (Kelgusi O\'yinlar)';
+            generateFifaMatches();
+        }
 
         function generateFifaMatches() {
             const container = document.getElementById('fifa-matches-list');
             container.innerHTML = '';
 
-            fifaLeagues.forEach(league => {
-                let team1 = getRandomItem(league.teams);
-                let team2 = getRandomItem(league.teams.filter(t => t !== team1));
+            const timeOptions = ["Bugun, 21:45", "Bugun, 23:00", "Ertaga, 18:30", "Ertaga, 20:00", "18-Oktabr, 19:15", "19-Oktabr, 22:00"];
 
-                let odd1 = (Math.random() * 2 + 1.2).toFixed(2);
-                let oddX = (Math.random() * 1.5 + 3.0).toFixed(2);
-                let odd2 = (Math.random() * 2.5 + 1.5).toFixed(2);
-                let minute = Math.floor(Math.random() * 80) + 1;
-                let score1 = Math.floor(Math.random() * 3);
-                let score2 = Math.floor(Math.random() * 3);
+            allLeagues.forEach(league => {
+                let shuffledTeams = [...league.teams].sort(() => 0.5 - Math.random());
+                
+                // Jamoalar sonining yarmi har bir rejimga taqsimlanadi
+                let pairsCount = Math.floor(shuffledTeams.length / 4); 
 
-                const card = document.createElement('div');
-                card.className = 'match-card';
-                card.innerHTML = `
-                    <div class="match-meta">
-                        <span>FIFA 26 | ${league.name}</span>
-                        <span style="color: var(--danger-color); font-weight: bold;">● ${minute}' min</span>
-                    </div>
-                    <div class="teams">
-                        <span>${team1}</span>
-                        <span>${score1} : ${score2}</span>
-                        <span>${team2}</span>
-                    </div>
-                    <div class="odds">
-                        <button class="odd-btn" onclick="placeBet('${team1}', ${odd1})">1 <span>${odd1}</span></button>
-                        <button class="odd-btn" onclick="placeBet('Durang', ${oddX})">X <span>${oddX}</span></button>
-                        <button class="odd-btn" onclick="placeBet('${team2}', ${odd2})">2 <span>${odd2}</span></button>
-                    </div>
-                `;
-                container.appendChild(card);
+                for (let i = 0; i < pairsCount * 2; i += 2) {
+                    let team1 = shuffledTeams[i];
+                    let team2 = shuffledTeams[i + 1];
+
+                    let odd1 = (Math.random() * 2 + 1.25).toFixed(2);
+                    let oddX = (Math.random() * 1.5 + 3.10).toFixed(2);
+                    let odd2 = (Math.random() * 2.5 + 1.40).toFixed(2);
+
+                    let statusText = "";
+                    if (currentFifaMode === 'live') {
+                        let minute = Math.floor(Math.random() * 85) + 1;
+                        let score1 = Math.floor(Math.random() * 3);
+                        let score2 = Math.floor(Math.random() * 3);
+                        statusText = `<span style="color: var(--danger-color); font-weight: bold;">● ${minute}' min (${score1} : ${score2})</span>`;
+                    } else {
+                        let startTime = timeOptions[Math.floor(Math.random() * timeOptions.length)];
+                        statusText = `<span style="color: var(--accent-color); font-weight: bold;">⏰ ${startTime}</span>`;
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'match-card';
+                    card.innerHTML = `
+                        <div class="match-meta">
+                            <span>FIFA 26 | ${league.name}</span>
+                            ${statusText}
+                        </div>
+                        <div class="teams">
+                            <span>${team1}</span>
+                            <span>VS</span>
+                            <span>${team2}</span>
+                        </div>
+                        <div class="odds">
+                            <button class="odd-btn" onclick="placeSportBet('${team1}', ${odd1})">1 <span>${odd1}</span></button>
+                            <button class="odd-btn" onclick="placeSportBet('Durang', ${oddX})">X <span>${oddX}</span></button>
+                            <button class="odd-btn" onclick="placeSportBet('${team2}', ${odd2})">2 <span>${odd2}</span></button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                }
             });
             tg.HapticFeedback.impactOccurred('light');
         }
 
-        function placeBet(team, odd) {
-            if (coins < 100) { alert('COIN yetarli emas!'); return; }
-            coins -= 100;
+        function placeSportBet(team, odd) {
+            let bet = parseInt(document.getElementById('sport-bet-amount').value) || 100;
+            if (coins < bet) { alert('COIN yetarli emas!'); return; }
+            coins -= bet;
             updateBalanceDisplay();
             tg.HapticFeedback.impactOccurred('medium');
-            alert(`100 COIN tikildi: ${team} (Kef: ${odd})`);
+            alert(`${bet} COIN tikildi: ${team} (Kef: ${odd})`);
         }
 
         /* --- TABS SWITCHER --- */
@@ -363,7 +495,7 @@
                 generateFifaMatches();
             } else {
                 document.getElementById('games-section').classList.add('active');
-                initAppleGame();
+                startAppleGame();
             }
             if (event) event.currentTarget.classList.add('active');
         }
@@ -375,13 +507,13 @@
             document.getElementById('game-' + game).style.display = 'block';
             event.currentTarget.classList.add('active');
 
-            if (game === 'apple') initAppleGame();
-            if (game === 'mines') initMinesGame();
+            if (game === 'apple') startAppleGame();
+            if (game === 'mines') startMinesGame();
         }
 
         /* --- MINI GAMES LOGIC --- */
-        // 1. Apple Game
-        function initAppleGame() {
+        function startAppleGame() {
+            let bet = parseInt(document.getElementById('apple-bet-amount').value) || 200;
             const grid = document.getElementById('appleGrid');
             grid.innerHTML = '';
             for (let i = 0; i < 15; i++) {
@@ -390,13 +522,13 @@
                 cell.innerHTML = '❓';
                 cell.onclick = function() {
                     if (cell.dataset.opened) return;
-                    if (coins < 50) { alert('50 COIN kerak!'); return; }
-                    coins -= 50;
+                    if (coins < bet) { alert('Balansingizda yetarli COIN yoʻq!'); return; }
+                    coins -= bet;
                     cell.dataset.opened = "true";
 
-                    if (Math.random() > 0.45) {
+                    if (Math.random() > 0.4) {
                         cell.innerHTML = '🍏'; cell.style.background = '#1b4d3e';
-                        coins += 100;
+                        coins += Math.floor(bet * 1.8);
                         tg.HapticFeedback.notificationOccurred('success');
                     } else {
                         cell.innerHTML = '🍎'; cell.style.background = '#4d1b1b';
@@ -408,23 +540,23 @@
             }
         }
 
-        // 2. Mines Game
-        function initMinesGame() {
+        function startMinesGame() {
+            let bet = parseInt(document.getElementById('mines-bet-amount').value) || 200;
             const grid = document.getElementById('minesGrid');
             grid.innerHTML = '';
-            for (let i = 0; i < 12; i++) {
+            for (let i = 0; i < 15; i++) {
                 const cell = document.createElement('div');
                 cell.className = 'mine-cell';
                 cell.innerHTML = '❓';
                 cell.onclick = function() {
                     if (cell.dataset.opened) return;
-                    if (coins < 50) { alert('50 COIN kerak!'); return; }
-                    coins -= 50;
+                    if (coins < bet) { alert('Balansingizda yetarli COIN yoʻq!'); return; }
+                    coins -= bet;
                     cell.dataset.opened = "true";
 
-                    if (Math.random() > 0.3) {
+                    if (Math.random() > 0.35) {
                         cell.innerHTML = '💎'; cell.style.background = '#1b4d3e';
-                        coins += 80;
+                        coins += Math.floor(bet * 1.9);
                         tg.HapticFeedback.notificationOccurred('success');
                     } else {
                         cell.innerHTML = '💣'; cell.style.background = '#4d1b1b';
@@ -436,17 +568,17 @@
             }
         }
 
-        // 3. Dice Game
         function playDice() {
-            if (coins < 100) { alert('100 COIN kerak!'); return; }
-            coins -= 100;
+            let bet = parseInt(document.getElementById('dice-bet-amount').value) || 500;
+            if (coins < bet) { alert('Balansingizda yetarli COIN yoʻq!'); return; }
+            coins -= bet;
 
             const res = Math.floor(Math.random() * 6) + 1;
             const diceIcons = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
             document.getElementById('dice-result').innerText = diceIcons[res - 1];
 
             if (res >= 4) {
-                coins += 200;
+                coins += bet * 2;
                 tg.HapticFeedback.notificationOccurred('success');
             } else {
                 tg.HapticFeedback.notificationOccurred('error');
@@ -454,7 +586,6 @@
             updateBalanceDisplay();
         }
 
-        // Init FIFA matches on start
         generateFifaMatches();
     </script>
 </body>
